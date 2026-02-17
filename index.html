@@ -1,0 +1,240 @@
+<html>
+<head>
+<title>for my special someone</title>
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: Arial, sans-serif;
+        flex-direction: column;
+        background: url('../goofy/assets/pinkRose.gif') repeat center center;
+        transition: background 0.5s;
+    }
+
+    body.rejected {
+        background: black;
+    }
+
+    body.accepted {
+        background: #D97D92;
+    }
+
+
+    #container {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #love-gif-2 {
+        width: 300px;
+        opacity: 0;
+        transform: scale(0.2);
+        display: none;
+    }
+
+    @keyframes growFade {
+        from {
+        transform: scale(0.2);
+        opacity: 0;
+        }
+        to {
+        transform: scale(1.5);
+        opacity: 1;
+        }
+    }
+
+    .overlay {
+        position: absolute;
+        top: -20px;
+        right: -300px;
+        background: white;
+        padding: 20px;
+        border: 3px solid #D97D92;
+        border-radius: 20px;
+        width: 280px;
+        text-align: center;
+        opacity: 0;
+        display: none;
+        z-index: 10;
+    }
+
+    .overlay.show {
+        animation: fadeIn 1s forwards;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .overlay::after {
+        content: "";
+        position: absolute;
+        bottom: -20px;
+        left: 20px;
+        border-width: 20px 20px 0 0;
+        border-style: solid;
+        border-color: #D97D92 transparent transparent transparent;
+    }
+
+    .overlay::before {
+        content: "";
+        position: absolute;
+        bottom: -17px;
+        left: 23px;
+        border-width: 17px 17px 0 0;
+        border-style: solid;
+        border-color: #D97D92 transparent transparent transparent;
+    }
+
+    .buttons {
+        margin-top: 15px;
+    }
+
+    .buttons button {
+        margin: 0 5px;
+        padding: 8px 20px;
+        cursor: pointer;
+        border: 2px solid #D97D92;
+        background: white;
+        border-radius: 5px;
+        font-weight: bold;
+    }
+
+    .buttons button:hover {
+        background: #D97D92;
+        color: white;
+    }
+
+    #typingText {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: red;
+        font-size: 20px;
+        font-family: 'Courier New', monospace;
+        text-align: left;
+        max-width: 90%;
+        display: none;
+        z-index: 100;
+        line-height: 1.6;
+        white-space: pre-wrap;
+    }
+</style>
+</head>
+
+<body>
+
+<button id="openBtn">open me</button>
+
+<div id="container">
+  <img src="../goofy/assets/emoji-flowers-for-you.gif" id="love-gif-2">
+
+  <div class="overlay" id="valentineBox">
+    <h2><strong>Will you be my valentines?</strong></h2>
+    <div class="buttons">
+      <button id="yesBtn">yes</button>
+      <button id="noBtn">no</button>
+    </div>
+  </div>
+</div>
+
+<div id="typingText"></div>
+
+<audio id="dreamMusic" loop>
+  <source src="../goofy/assets/dreaming.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="nightmareMusic" loop>
+  <source src="../goofy/assets/nightmare.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+    const doxxText = `IP. 92.28.211.234 N: 43.7462 W: 12.4893 SS Number: 6979191519182016 IPv6: fe80::5dcd::ef69::fb22::d9888%12 UPNP: Enabled DMZ: 10.112.42.15 MAC: 5A:78:3E:7E:00 ISP: Ucom Universal DNS: 8.8.8.8 ALT DNS: 1.1.1.8.1 DNS SUFFIX: Dlink WAN: 100.23.10.15 GATEWAY: 192.168.0.1 SUBNET MASK: 255.255.0.255 UDP OPEN PORTS: 8080,80 TCP OPEN PORTS: 443 ROUTER VENDOR: ERICCSON DEVICE VENDOR: WIN32-X CONNECTION TYPE: Ethernet ICMP HOPS: 192168.0.1 192168.1.1 100.73.43.4 host-132.12.32.167.ucom.com host-66.120.12.111.ucom.com 36.134.67.189 216.239.78.111 sof02s32-in-f14.1e100.net TOTAL HOPS: 8 ACTIVE SERVICES: [HTTP] 192.168.3.1:80=>92.28.211.234:80 [HTTP] 192.168.3.1:443=>92.28.211.234:443 [UDP] 192.168.0.1:788=>192.168.1:6557 [TCP] 192.168.1.1:67891=>92.28.211.234:345 [TCP] 192.168.52.43:7777=>192.168.1.1:7778 [TCP] 192.168.78.12:898=>192.168.89.9:667 EXTERNAL MAC: 6U:78:89:ER:O4 MODEM JUMPS: 64
+
+IP. 92.28.511.239 N: 43.7462 W: 12.4893 SS Number: 6979191519182016 IPv6: fe80:5dcd::ef69::fb22::d9 888%12 UPNP: Enabled DMZ: 10.112.42.15 MAC: 5A:78:3:7E:00 ISP: Ucom Universal DNS: 8.8.8.8 ALT DNS: 1.1.1.8.1 DNS SUFFIX: Dlink WAN: 100.23.10.15 GATEWAY: 192.168.0.1 SUBNET MASK: 255.255.0.255 UDP OPEN PORTS: 8080,80 TCP OPEN PORTS: 443
+
+IP. 92.28.211.234
+N: 43.7462
+W: 12.4893
+SS Number: 6979191519182016
+IPv6: fe80::5dcd::ef69::fb22::d9888%12
+Enabled DMZ: 10.112.42.15
+MAC: 5A:78:3E:7E:00
+ISP: Ucom Universal DNS: 8.8.8.8
+ALT DNS: 1.1.1.8.1
+Dlink WAN: 100.23.10.15
+GATEWAY: 192.168.0.1
+SUBNET MASK: 255.255.0.255
+UDP OPEN PORTS: 8080,80
+TCP OPEN PORTS: 443 ROUTER
+VENDOR: ERICCSON DEVICE VENDOR: WIN32-X CONNECTION TYPE: Ethernet ICMP`;
+
+    document.getElementById("openBtn").addEventListener("click", function() {
+        const gif = document.getElementById("love-gif-2");
+        const music = document.getElementById("dreamMusic");
+        const box = document.getElementById("valentineBox");
+
+        this.style.display = "none";
+
+        gif.style.display = "block";
+        gif.style.animation = "growFade 3s forwards";
+        music.play();
+
+        setTimeout(() => {
+        box.style.display = "block";
+        box.classList.add("show");
+        }, 3000);
+    });
+
+    // Yes
+    document.getElementById("yesBtn").addEventListener("click", function() {
+        alert("Yay! 💕");
+    });
+
+    // No 
+    document.getElementById("noBtn").addEventListener("click", function() {
+
+        document.body.classList.add("rejected");
+        
+        document.getElementById("love-gif-2").style.display = "none";
+        document.getElementById("valentineBox").style.display = "none";
+
+
+        const dreamMusic = document.getElementById("dreamMusic");
+        const nightmareMusic = document.getElementById("nightmareMusic");
+        
+        dreamMusic.pause();
+        dreamMusic.currentTime = 0;
+        nightmareMusic.play();
+
+        const typingElement = document.getElementById("typingText");
+        typingElement.style.display = "block";
+        
+        let index = 0;
+        const typingSpeed = 5;
+        
+        function doxxingTime() {
+        if (index < doxxText.length) {
+            typingElement.textContent += doxxText.charAt(index);
+            index++;
+            setTimeout(doxxingTime, typingSpeed);
+        }else{
+            index = 0;
+            typingElement.textContent = "";
+            setTimeout(doxxingTime, 500);
+        }
+        }
+        
+    doxxingTime();
+  });
+</script>
+
+</body>
+</html>
