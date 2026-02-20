@@ -9,9 +9,9 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        font-family: Arial, sans-serif;
+        /* font-family: Arial, sans-serif; */
         flex-direction: column;
-        background: url('../goofy/assets/pinkRose.gif') repeat center center;
+        background: url('./assets/pinkRose.gif') repeat center center;
         transition: background 0.5s;
     }
 
@@ -51,7 +51,7 @@
 
     .overlay {
         position: absolute;
-        top: -20px;
+        top: -130px;
         right: -300px;
         background: white;
         padding: 20px;
@@ -119,7 +119,7 @@
         transform: translate(-50%, -50%);
         color: red;
         font-size: 20px;
-        font-family: 'Courier New', monospace;
+        /* font-family: 'Courier New', monospace; */
         text-align: left;
         max-width: 90%;
         display: none;
@@ -133,7 +133,6 @@
         padding: 40px;
         border-radius: 20px;
         border: 3px solid #D97D92;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         max-width: 400px;
         text-align: center;
     }
@@ -160,7 +159,7 @@
         color: white;
         border: none;
         border-radius: 8px;
-        font-weight: bold;
+        /* font-weight: bold; */
         cursor: pointer;
         font-size: 16px;
     }
@@ -198,19 +197,92 @@
 
     .valentine-page {
         display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
         width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    #yesCard {
+        font-size: 20px;
+        line-height: 1;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        border: 3px solid #D97D92;
+        border-radius: 16px;
+        padding: 20px 24px;
+        width: 260px;
+        text-align: center;
+        display: none;
+        z-index: 200;
+    }
+
+    #yesCard.show {
+        display: block;
+        animation: popIn 0.25s ease-out;
+    }
+
+    @keyframes popIn {
+        from { transform: translate(-50%, -50%) scale(0.85); opacity: 0; }
+        to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+
+    .marquee-lane {
+        width: 100%;
+        height: 120px;
+        overflow: hidden;
+        position: relative;
+        pointer-events: none;
+    }
+
+    .marquee-item {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 260px;
+        height: 120px;
+        animation-timing-function: linear;
+        animation-iteration-count: 1;
+        will-change: left;
+    }
+
+    .marquee-item.move-left {
+        animation-name: moveLeft;
+    }
+
+    .marquee-item.move-right {
+        animation-name: moveRight;
+    }
+
+    @keyframes moveLeft {
+        from { left: 100%; }
+        to { left: -140px; }
+    }
+
+    @keyframes moveRight {
+        from { left: -140px; }
+        to { left: 100%; }
     }
 </style>
 </head>
 
 <body>
-
+<div class="marquee-wrapper" id="marqueeWrapper" style="display: none; width: 100%;">
+    <div class="marquee-lane" id="marqueeLaneTop"></div>
+    <div class="marquee-lane" id="marqueeLaneMid"></div>
+</div>
 <div id="formContainer">
-    <h1>💕 Create Your Valentine's Message 💕</h1>
+    <h1>message for your special someone</h1>
     <form id="valentineForm">
-        <input type="text" id="targetName" placeholder="Target's name" required>
+        <input type="text" id="targetName" placeholder="your special someone" required>
         <input type="text" id="senderName" placeholder="Your name" required>
-        <textarea id="customMessage" placeholder="Custom message (optional)" rows="4"></textarea>
         <button type="submit">Generate Link</button>
     </form>
     <div id="linkResult">
@@ -221,13 +293,14 @@
 </div>
 
 <div class="valentine-page">
-    <button id="openBtn">open me</button>
+    <button style="padding: 50px; font-size: 25px; border-radius: 15px;" id="openBtn">open me</button>
 
     <div id="container">
-        <img src="../goofy/assets/emoji-flowers-for-you.gif" id="love-gif-2">
+        <img src="./assets/emoji-flowers-for-you.gif" id="love-gif-2">
 
         <div class="overlay" id="valentineBox">
             <h2 id="valentineQuestion"><strong>Will you be my valentines?</strong></h2>
+            <p id="valentineMessage"></p>
             <div class="buttons">
             <button id="yesBtn">yes</button>
             <button id="noBtn">no</button>
@@ -238,29 +311,37 @@
     <div id="typingText"></div>
 </div>
 
+<div id="yesCard" aria-live="polite"></div>
+
 <audio id="dreamMusic" loop>
-    <source src="../goofy/assets/dreaming.mp3" type="audio/mpeg">
+    <source src="./assets/dreaming.mp3" type="audio/mpeg">
 </audio>
 
 <audio id="nightmareMusic" loop>
-    <source src="../goofy/assets/nightmare.mp3" type="audio/mpeg">
+    <source src="./assets/nightmare.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-    // Get URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    const targetName = urlParams.get('target');
-    const senderName = urlParams.get('sender');
-    const customMessage = urlParams.get('message');
+    function encodeBase64(value) {
+        return btoa(unescape(encodeURIComponent(value)));
+    }
 
-    // Show form or valentine page based on URL parameters
+    function decodeBase64(value) {
+        return decodeURIComponent(escape(atob(value)));
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetName = urlParams.get('t') ? decodeBase64(urlParams.get('t')) : null;
+    const senderName = urlParams.get('s') ? decodeBase64(urlParams.get('s')) : null;
+
     if (targetName && senderName) {
         document.getElementById('formContainer').style.display = 'none';
         document.querySelector('.valentine-page').style.display = 'flex';
         
-        // Personalize the message
         document.getElementById('valentineQuestion').innerHTML = 
             `<strong>${targetName}, will you be my valentine?</strong>`;
+        document.getElementById('valentineMessage').innerHTML = 
+            `<strong>${senderName}</strong> made this just for <strong>${targetName}</strong>.`;
     } else {
         document.getElementById('formContainer').style.display = 'block';
     }
@@ -271,21 +352,16 @@
         
         const target = document.getElementById('targetName').value;
         const sender = document.getElementById('senderName').value;
-        const message = document.getElementById('customMessage').value;
         
         // Generate URL with parameters
         const baseUrl = window.location.origin + window.location.pathname;
-        let linkUrl = `${baseUrl}?target=${encodeURIComponent(target)}&sender=${encodeURIComponent(sender)}`;
-        if (message) {
-            linkUrl += `&message=${encodeURIComponent(message)}`;
-        }
+        const linkUrl = `${baseUrl}?t=${encodeURIComponent(encodeBase64(target))}&s=${encodeURIComponent(encodeBase64(sender))}`;
         
         // Show the generated link
         document.getElementById('generatedLink').value = linkUrl;
         document.getElementById('linkResult').style.display = 'block';
     });
 
-    // Copy link button
     document.getElementById('copyBtn').addEventListener('click', function() {
         const linkInput = document.getElementById('generatedLink');
         linkInput.select();
@@ -295,6 +371,64 @@
             this.textContent = 'Copy Link';
         }, 2000);
     });
+
+    const marqueeAssets = [
+        "./assets/emoji-blush.gif",
+        "./assets/emoji-love.gif",
+        "./assets/emoji-smiley.gif",
+        "./assets/giggling-laughing.gif",
+        "./assets/heart-emoji.gif",
+        "./assets/love-emoji.gif",
+        "./assets/rose-emoji.gif",
+        "./assets/smiley-emoji.gif"
+    ];
+
+    function spawnMarqueeItem(laneId) {
+        const lane = document.getElementById(laneId);
+        if (!lane) {
+            return;
+        }
+
+        const img = document.createElement("img");
+        const direction = Math.random() < 0.5 ? "move-left" : "move-right";
+        const duration = 6 + Math.random() * 6;
+        const delay = 0.2 + Math.random() * 0.8;
+
+        img.className = `marquee-item ${direction}`;
+        img.src = marqueeAssets[Math.floor(Math.random() * marqueeAssets.length)];
+        img.alt = "";
+        img.style.animationDuration = `${duration}s`;
+        img.style.animationDelay = `${delay}s`;
+
+        lane.appendChild(img);
+
+        img.addEventListener("animationend", function() {
+            img.remove();
+            const nextDelay = 300 + Math.random() * 700;
+            setTimeout(() => spawnMarqueeItem(laneId), nextDelay);
+        });
+    }
+
+    let marqueeStarted = false;
+
+    function startMarquee() {
+        if (marqueeStarted) {
+            return;
+        }
+        marqueeStarted = true;
+        ["marqueeLaneTop", "marqueeLaneMid"].forEach((laneId, index) => {
+            setTimeout(() => spawnMarqueeItem(laneId), index * 400);
+        });
+    }
+
+    function stopMarquee() {
+        marqueeStarted = false;
+        const wrapper = document.getElementById("marqueeWrapper");
+        if (wrapper) {
+            wrapper.style.display = "none";
+        }
+        document.querySelectorAll(".marquee-item").forEach((item) => item.remove());
+    }
 
     const doxxText = `IP. 92.28.211.234 N: 43.7462 W: 12.4893 SS Number: 6979191519182016 IPv6: fe80::5dcd::ef69::fb22::d9888%12 UPNP: Enabled DMZ: 10.112.42.15 MAC: 5A:78:3E:7E:00 ISP: Ucom Universal DNS: 8.8.8.8 ALT DNS: 1.1.1.8.1 DNS SUFFIX: Dlink WAN: 100.23.10.15 GATEWAY: 192.168.0.1 SUBNET MASK: 255.255.0.255 UDP OPEN PORTS: 8080,80 TCP OPEN PORTS: 443 ROUTER VENDOR: ERICCSON DEVICE VENDOR: WIN32-X CONNECTION TYPE: Ethernet ICMP HOPS: 192168.0.1 192168.1.1 100.73.43.4 host-132.12.32.167.ucom.com host-66.120.12.111.ucom.com 36.134.67.189 216.239.78.111 sof02s32-in-f14.1e100.net TOTAL HOPS: 8 ACTIVE SERVICES: [HTTP] 192.168.3.1:80=>92.28.211.234:80 [HTTP] 192.168.3.1:443=>92.28.211.234:443 [UDP] 192.168.0.1:788=>192.168.1:6557 [TCP] 192.168.1.1:67891=>92.28.211.234:345 [TCP] 192.168.52.43:7777=>192.168.1.1:7778 [TCP] 192.168.78.12:898=>192.168.89.9:667 EXTERNAL MAC: 6U:78:89:ER:O4 MODEM JUMPS: 64
 
@@ -320,8 +454,14 @@ VENDOR: ERICCSON DEVICE VENDOR: WIN32-X CONNECTION TYPE: Ethernet ICMP`;
         const gif = document.getElementById("love-gif-2");
         const music = document.getElementById("dreamMusic");
         const box = document.getElementById("valentineBox");
+        const marqueeWrapper = document.getElementById("marqueeWrapper");
 
         this.style.display = "none";
+
+        if (marqueeWrapper) {
+            marqueeWrapper.style.display = "block";
+        }
+        startMarquee();
 
         gif.style.display = "block";
         gif.style.animation = "growFade 3s forwards";
@@ -335,21 +475,38 @@ VENDOR: ERICCSON DEVICE VENDOR: WIN32-X CONNECTION TYPE: Ethernet ICMP`;
 
     // Yes
     document.getElementById("yesBtn").addEventListener("click", function() {
-        let message = "Yay! 💕";
-        if (senderName) {
-            message = `Yay! ${senderName} is so happy! 💕`;
-            if (customMessage) {
-                message += `\n\n${senderName} says: "${customMessage}"`;
-            }
+        // alert("see you on valentines day <3");
+        const card = document.getElementById("yesCard");
+        const toName = targetName || "you";
+        const fromName = senderName || "someone";
+
+        card.innerHTML = `
+            <strong>Yay!</strong><br>
+            Hey there, <strong>${toName}</strong>, <strong>${fromName}</strong> here, I just wanna let u know. You are the best,
+            you always make my day better. You are so beautiful, both inside and out. please stop consuming super sugary products
+            take care of yourself because i care about u so much and i want u to be healthy and happy.
+        `;
+        card.classList.add("show");
+    });
+
+    document.addEventListener("click", function(event) {
+        const card = document.getElementById("yesCard");
+        const yesButton = document.getElementById("yesBtn");
+
+        if (!card.classList.contains("show")) {
+            return;
         }
-        alert(message);
+
+        if (!card.contains(event.target) && event.target !== yesButton) {
+            card.classList.remove("show");
+        }
     });
 
     // No 
     document.getElementById("noBtn").addEventListener("click", function() {
-
+        // alert("no test");
+        stopMarquee();
         document.body.classList.add("rejected");
-        
         document.getElementById("love-gif-2").style.display = "none";
         document.getElementById("valentineBox").style.display = "none";
 
