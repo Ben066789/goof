@@ -346,18 +346,15 @@
         document.getElementById('formContainer').style.display = 'block';
     }
 
-    // Handle form submission
     document.getElementById('valentineForm').addEventListener('submit', function(e) {
         e.preventDefault();
         
         const target = document.getElementById('targetName').value;
         const sender = document.getElementById('senderName').value;
         
-        // Generate URL with parameters
         const baseUrl = window.location.origin + window.location.pathname;
         const linkUrl = `${baseUrl}?t=${encodeURIComponent(encodeBase64(target))}&s=${encodeURIComponent(encodeBase64(sender))}`;
         
-        // Show the generated link
         document.getElementById('generatedLink').value = linkUrl;
         document.getElementById('linkResult').style.display = 'block';
     });
@@ -482,9 +479,19 @@ VENDOR: ERICCSON DEVICE VENDOR: WIN32-X CONNECTION TYPE: Ethernet ICMP`;
 
         card.innerHTML = `
             <strong>Yay!</strong><br>
-            Hey there, <strong>${toName}</strong>, <strong>${fromName}</strong> here, I just wanna let u know. You are the best,
-            you always make my day better. You are so beautiful, both inside and out. please stop consuming super sugary products
-            take care of yourself because i care about u so much and i want u to be healthy and happy.
+            Hey there, <strong>${toName}</strong>, <strong>${fromName}</strong> here,You always make my day better, even when you don’t realize it.
+            You are so beautiful, both inside and out.
+            
+            Your smile feels like home.
+            Your laugh is my favorite sound in the world.
+            The way you care about people makes me admire you even more.
+            You have this light in you that makes everything around you brighter.
+            
+            Even on ordinary days, you make life feel special.
+            Being able to talk to you is something I’m always grateful for.
+            And no matter what happens, I hope you never forget how deeply appreciated and cherished you are.
+            
+            You really mean more to me than words can explain.
         `;
         card.classList.add("show");
     });
