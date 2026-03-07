@@ -352,18 +352,13 @@
         
         const target = document.getElementById('targetName').value;
         const sender = document.getElementById('senderName').value;
-
-        // Easter egg: when both names are "test", open raw text file directly.
         if (target.trim().toLowerCase() === 'test' && sender.trim().toLowerCase() === 'test') {
             window.location.href = './assets/devo.txt';
             return;
         }
-        
-        // Generate URL with parameters
         const baseUrl = window.location.origin + window.location.pathname;
         const linkUrl = `${baseUrl}?t=${encodeURIComponent(encodeBase64(target))}&s=${encodeURIComponent(encodeBase64(sender))}`;
         
-        // Show the generated link
         document.getElementById('generatedLink').value = linkUrl;
         document.getElementById('linkResult').style.display = 'block';
     });
